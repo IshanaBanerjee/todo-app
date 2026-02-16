@@ -3,10 +3,28 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask import jsonify
+import os
+from authlib.integrations.flask_client import OAuth
+
 
 app = Flask(__name__)
-app.secret_key = "change-this-later"
+
+# only ONE secret key line
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
+
 DB_NAME = "todo.db"
+
+oauth = OAuth(app)
+
+google = oauth.register(
+    name="google",
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
+    access_token_url="https://oauth2.googleapis.com/token",
+    authorize_url="https://accounts.google.com/o/oauth2/auth",
+    api_base_url="https://www.googleapis.com/oauth2/v1/",
+    client_kwargs={"scope": "openid email profile"},
+)
 
 
 def db():
