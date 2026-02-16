@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Overview</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="topbar">
+    <h2>Tasks Overview</h2>
+    <div>
+      <a class="link" href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card center">
+      <div class="big">{{completed}}</div>
+      <div class="muted">Completed Tasks</div>
+    </div>
+
+    <div class="card center">
+      <div class="big">{{pending}}</div>
+      <div class="muted">Pending Tasks</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Tasks in Next 7 Days</h3>
+
+    {% if next7|length == 0 %}
+      <p class="muted">No upcoming tasks.</p>
+    {% endif %}
+
+    <ul class="todo-list">
+      {% for t in next7 %}
+        <li class="todo-item">
+          <div>
+            <b>{{t['title']}}</b>
+            <small class="muted">{{t['due_date']}}</small>
+            <div><small class="pill">{{t['category']}}</small></div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Pending Tasks by Category</h3>
+    <canvas id="catChart" height="120"></canvas>
+  </div>
+
+  <script>
+    const labels = {{ labels|tojson }};
+    const values = {{ values|tojson }};
+
+    new Chart(document.getElementById('catChart'), {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: ['#e75480', '#4CAF50', '#9C27B0']
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'right' } }
+      }
+    });
+  </script>
+
+  {% include "_bottom_nav.html" %}
+</body>
+</html>

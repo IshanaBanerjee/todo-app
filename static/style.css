@@ -1,0 +1,284 @@
+/* -------------------------
+   Base layout
+-------------------------- */
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+  background: #f8f6fb;
+  padding-bottom: 110px; /* space for bottom nav */
+}
+
+/* Common container width (used by dashboard/topbar/tabs/etc.) */
+.container {
+  width: 95%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Calendar container: wider than normal pages */
+.calendar-container {
+  width: 95%;
+  max-width: 1000px;  /* try 1050 if you want smaller */
+  margin: 0 auto;
+}
+
+/* -------------------------
+   Cards + forms
+-------------------------- */
+.card {
+  background: rgb(227, 237, 253);
+  padding: 16px;
+  border-radius: 10px;
+  max-width: 500px;   /* Keep dashboard normal */
+  margin: 0 auto 16px auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.calendar-card {
+  background: white;      /* remove big blue block */
+  max-width: 1050px;
+  width: 95%;
+  margin: 0 auto 16px auto;
+}
+
+/* Default cards (dashboard, login, etc.) centered with smaller width */
+.card.narrow {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Inputs */
+input, button, select {
+  padding: 10px;
+  margin: 6px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  background: #222;
+  color: rgb(213, 229, 236);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.danger {
+  background: #b00020;
+}
+
+/* -------------------------
+   Topbar + links
+-------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 95%;
+  max-width: 900px;
+  margin: 0 auto 20px;
+}
+
+.link {
+  text-decoration: none;
+  color: #222;
+  font-weight: bold;
+}
+
+/* -------------------------
+   Tabs + pills
+-------------------------- */
+.tabs {
+  display: flex;
+  gap: 10px;
+  width: 95%;
+  max-width: 900px;
+  margin: 0 auto 12px;
+}
+
+.tab {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #eee;
+  text-decoration: none;
+  color: #222;
+}
+
+.tab.active {
+  background: #f3b6c8;
+}
+
+.pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f1f1;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+/* -------------------------
+   Todo list
+-------------------------- */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  gap: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions form {
+  margin: 0;
+}
+
+.actions button {
+  width: auto;
+  padding: 8px 12px;
+}
+
+.done {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.muted {
+  display: block;
+  color: #777;
+  margin-top: 4px;
+}
+
+.overdue {
+  color: red;
+  font-weight: bold;
+}
+
+/* -------------------------
+   Bottom navigation (mobile-style)
+-------------------------- */
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 14px;
+  width: min(720px, calc(100% - 24px));
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 6px;
+  z-index: 999;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  min-width: 90px;
+}
+
+.nav-item.active {
+  background: #f3b6c8;
+  color: #111;
+  font-weight: 700;
+}
+
+.nav-icon { font-size: 18px; line-height: 1; }
+.nav-text { font-size: 12px; }
+
+/* -------------------------
+   FullCalendar fixes (WIDER + TEXT FIT)
+-------------------------- */
+
+/* Make calendar fill the wide container */
+#calendar {
+  width: 100%;
+}
+
+/* =========================
+   FullCalendar styling
+   ========================= */
+
+/* Base font */
+.fc {
+  font-size: 14px;
+}
+
+/* Make day cells taller so events fit better */
+.fc .fc-daygrid-day-frame {
+  min-height: 120px;
+  overflow: hidden !important; /* prevents spill */
+}
+
+/* Event block */
+.fc .fc-daygrid-event {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 2px 3px !important;
+  border-radius: 10px !important;
+
+  /* sober light blue */
+  background: #6d97cd !important;       /* light sober blue */
+  border: 1px solid #bfdbfe !important; /* soft border */
+  color: #1e3a8a !important;            /* navy text */
+
+  padding: 6px 8px !important;
+  box-sizing: border-box !important;
+
+  /* important: prevent weird stretching */
+  overflow: hidden !important;
+}
+
+/* Force time to be its own line (so it appears above title) */
+.fc .fc-event-time {
+  display: block !important;
+  white-space: nowrap !important;  /* keeps "PM" visible */
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  margin: 0 0 2px 0 !important;
+  line-height: 1.2 !important;
+}
+
+/* Title on next line, wrap nicely */
+.fc .fc-event-title {
+  display: block !important;
+  white-space: normal !important;   /* allow wrap */
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+/* Ensure inner layout does not force a single line */
+.fc .fc-event-main-frame {
+  display: block !important;
+}
+
+/* Slight highlight for today */
+.fc .fc-day-today {
+  background: rgba(243, 182, 200, 0.18) !important;
+}
+
+/* Small spacing between stacked events */
+.fc .fc-daygrid-event-harness {
+  margin-top: 2px !important;
+}

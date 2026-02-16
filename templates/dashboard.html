@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+ <div class="topbar">
+  <h2>Your To-Do List</h2>
+  <a class="link" href="/logout">Logout</a>
+</div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <a class="tab {% if cat=='All' %}active{% endif %}" href="/dashboard?cat=All">All</a>
+    <a class="tab {% if cat=='Work' %}active{% endif %}" href="/dashboard?cat=Work">Work</a>
+    <a class="tab {% if cat=='Personal' %}active{% endif %}" href="/dashboard?cat=Personal">Personal</a>
+    <a class="tab {% if cat=='Wishlist' %}active{% endif %}" href="/dashboard?cat=Wishlist">Wishlist</a>
+  </div>
+
+  <div class="card">
+    <h3>Add Task</h3>
+    <form method="POST" action="/dashboard?cat={{cat}}">
+      <input name="title" placeholder="Task title..." required>
+
+      <!-- Date + Time -->
+      <input name="due_date" type="datetime-local">
+
+      <!-- Category -->
+      <select name="category" required>
+        <option value="Work">Work</option>
+        <option value="Personal" selected>Personal</option>
+        <option value="Wishlist">Wishlist</option>
+      </select>
+
+      <button type="submit">Add</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Tasks</h3>
+
+    {% if todos|length == 0 %}
+      <p>No tasks in this tab yet. Add your first one ✅</p>
+    {% endif %}
+
+    <ul class="todo-list">
+      {% for t in todos %}
+        <li class="todo-item">
+          <div>
+            <span class="{% if t['is_done'] == 1 %}done{% endif %}">{{ t['title'] }}</span>
+            {% if t['due_date'] %}
+              <small class="muted">Due: {{ t['due_date'] }}</small>
+            {% endif %}
+            <div><small class="pill">{{ t['category'] }}</small></div>
+          </div>
+
+          <div class="actions">
+            <form method="POST" action="/toggle/{{t['id']}}">
+              <button type="submit">{% if t['is_done'] == 1 %}Undo{% else %}Done{% endif %}</button>
+            </form>
+
+            <form method="POST" action="/delete/{{t['id']}}">
+              <button class="danger" type="submit">Delete</button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% include "_bottom_nav.html" %}
+
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendar</title>
+  <link rel="stylesheet" href="/static/style.css">
+
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+  <style>
+    /* Wider calendar page */
+    .calendar-wrap {
+      width: 95%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Make the card full width */
+    .calendar-card {
+      width: 100%;
+      max-width: none;
+      margin: 0 0 16px 0;
+    }
+
+    /* Calendar box styling */
+    #calendar {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      min-height: 700px;
+    }
+
+    /* FULLCALENDAR: make event text fit */
+    .fc .fc-daygrid-day-frame {
+  min-height: 120px;   /* balanced height */
+}
+
+
+    .fc .fc-daygrid-event,
+    .fc .fc-event-title {
+      white-space: normal !important; /* wrap text */
+      line-height: 1.2;
+    }
+
+    .fc .fc-event-time {
+      white-space: nowrap !important; /* keep time on one line */
+    }
+
+    /* Optional: slightly smaller event title font */
+    .fc .fc-event-title {
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <h2>Calendar</h2>
+    <a class="link" href="/logout">Logout</a>
+  </div>
+
+<div class="calendar-container">
+
+    <div class="card calendar-card">
+      <div id="calendar"></div>
+    </div>
+
+    <div class="card calendar-card" id="dayBox" style="display:none;">
+      <h3 id="dayTitle"></h3>
+      <div id="dayTasks"></div>
+    </div>
+  </div>
+
+  <script>
+    async function fetchDayTasks(dateStr) {
+      const res = await fetch(`/api/day?date=${dateStr}`);
+      const tasks = await res.json();
+
+      const box = document.getElementById("dayBox");
+      const title = document.getElementById("dayTitle");
+      const container = document.getElementById("dayTasks");
+
+      box.style.display = "block";
+      title.textContent = `Tasks on ${dateStr}`;
+
+      if (!tasks || tasks.length === 0) {
+        container.innerHTML = "<p class='muted'>No tasks on this date.</p>";
+        return;
+      }
+
+      container.innerHTML = tasks.map(t => `
+        <div class="todo-item">
+          <div>
+            <b>${t.title}</b>
+            <div class="muted">${t.due_date || ""}</div>
+            <div><small class="pill">${t.category || "Other"}</small></div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+       initialView: 'dayGridMonth',
+       height: 820,
+       expandRows: true,
+       events: '/api/events',
+
+       eventDisplay: 'block',
+       dayMaxEvents: true,
+
+       eventTimeFormat: {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+       },
+
+  dateClick: function(info) {
+    fetchDayTasks(info.dateStr);
+  },
+
+  eventClick: function(info) {
+    fetchDayTasks(info.event.startStr.substring(0, 10));
+  }
+});
+
+
+      calendar.render();
+    });
+  </script>
+
+  {% include "_bottom_nav.html" %}
+</body>
+</html>
+
+
