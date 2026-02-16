@@ -259,15 +259,27 @@ def api_events():
 
     events = []
     for r in rows:
-        # due_date stored like "YYYY-MM-DD HH:MM"
-        # FullCalendar wants ISO "YYYY-MM-DDTHH:MM"
-        start = r["due_date"].replace(" ", "T")
+        due = (r["due_date"] or "").strip()
+
+        # If due date is missing, skip creating an event
+        if not due:
+            continue
+
+        # Convert "YYYY-MM-DD HH:MM" -> "YYYY-MM-DDTHH:MM:00"
+        if " " in due:
+            date_part, time_part = due.split(" ", 1)
+            start = f"{date_part}T{time_part}:00"
+            all_day = False
+        else:
+            # Date-only (rare)
+            start = due
+            all_day = True
 
         events.append({
-         "id": r["id"],
-         "title": f"[{r['category']}] {r['title']}",
-         "start": start,
-         "allDay": False
+            "id": r["id"],
+            "title": f"[{r['category']}] {r['title']}",
+            "start": start,
+            "allDay": all_day
         })
 
     return jsonify(events)
