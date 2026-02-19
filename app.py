@@ -26,6 +26,31 @@ google = oauth.register(
     client_kwargs={"scope": "openid email profile"},
 )
 
+from urllib.parse import urljoin
+from flask import redirect, url_for, session, request
+
+@app.route("/login/google")
+def login_google():
+    redirect_uri = url_for("auth_google_callback", _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route("/auth/google/callback")
+def auth_google_callback():
+    token = google.authorize_access_token()
+    userinfo = google.get("userinfo").json()
+
+    email = userinfo.get("email")
+    name = userinfo.get("name", "")
+
+    # TODO: create/find user in DB using email
+    # Example: store email in session for now
+    session["user_id"] = email
+    session["user_email"] = email
+    session["user_name"] = name
+
+    return redirect(url_for("dashboard"))
+
+
 
 def db():
     conn = sqlite3.connect(DB_NAME)
