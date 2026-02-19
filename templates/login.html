@@ -3,16 +3,50 @@
 <head>
   <title>Login</title>
   <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .google-btn {
+      display: block;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #4285F4;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .google-btn:hover {
+      background-color: #357ae8;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 15px 0;
+      color: #777;
+    }
+  </style>
 </head>
 <body>
   <div class="card">
     <h2>Login</h2>
+
+    <!-- Normal Login -->
     <form method="POST">
       <input name="username" placeholder="Username" required>
       <input name="password" type="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
+
+    <div class="divider">OR</div>
+
+    <!-- Google Login Button -->
+    <a href="/login/google" class="google-btn">
+      Continue with Google
+    </a>
+
     <p>No account? <a href="/register">Register</a></p>
   </div>
 </body>
 </html>
+
