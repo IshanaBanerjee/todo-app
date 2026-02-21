@@ -3,15 +3,48 @@
 <head>
   <title>Register</title>
   <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .google-btn {
+      display: block;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #4285F4;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .google-btn:hover {
+      background-color: #357ae8;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 15px 0;
+      color: #777;
+    }
+  </style>
 </head>
 <body>
   <div class="card">
     <h2>Create Account</h2>
+
+    <!-- Normal Register -->
     <form method="POST">
       <input name="username" placeholder="Username" required>
       <input name="password" type="password" placeholder="Password" required>
       <button type="submit">Register</button>
     </form>
+
+    <div class="divider">OR</div>
+
+    <!-- Google Register Button -->
+    <a href="/login/google" class="google-btn">
+      Sign up with Google
+    </a>
+
     <p>Already have an account? <a href="/login">Login</a></p>
   </div>
 </body>
