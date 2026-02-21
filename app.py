@@ -35,20 +35,37 @@ def login_google():
 @app.route("/auth/google/callback")
 def auth_google_callback():
     token = google.authorize_access_token()
-    userinfo = google.get("userinfo").json()
+    userinfo = google.get("https://www.googleapis.com/oauth2/v2/userinfo").json()
 
-    email = userinfo.get("email")
-    name = userinfo.get("name", "")
+    email = (userinfo.get("email") or "").strip().lower()
+    name = (userinfo.get("name") or "").strip()
 
-    # TODO: create/find user in DB using email
-    # Example: store email in session for now
-    session["user_id"] = email
+    if not email:
+        return "Google login failed: email not found", 400
+
+    conn = db()
+
+    # Find user by email stored in username column
+    user = conn.execute("SELECT * FROM users WHERE username=?", (email,)).fetchone()
+
+    if user is None:
+        random_pw = secrets.token_urlsafe(24)
+        pw_hash = generate_password_hash(random_pw)
+        conn.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (email, pw_hash)
+        )
+        conn.commit()
+        user = conn.execute("SELECT * FROM users WHERE username=?", (email,)).fetchone()
+
+    conn.close()
+
+    # ✅ store numeric id
+    session["user_id"] = user["id"]
     session["user_email"] = email
     session["user_name"] = name
 
     return redirect(url_for("dashboard"))
-
-
 
 def db():
     conn = sqlite3.connect(DB_NAME)
